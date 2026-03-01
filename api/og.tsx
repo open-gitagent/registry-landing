@@ -60,7 +60,7 @@ export default function handler(req: Request) {
             display: 'flex',
             alignItems: 'center',
             gap: 10,
-            fontSize: 16,
+            fontSize: 20,
             color: accent,
             opacity: 0.5,
           }}
@@ -79,12 +79,12 @@ export default function handler(req: Request) {
         {/* Agent name */}
         <div
           style={{
-            fontSize: 64,
+            fontSize: 82,
             fontWeight: 700,
             color: '#3D2B1F',
-            lineHeight: 1.1,
+            lineHeight: 1.05,
             letterSpacing: '-0.03em',
-            marginBottom: 16,
+            marginBottom: 20,
           }}
         >
           {name}
@@ -94,14 +94,14 @@ export default function handler(req: Request) {
         {description && (
           <div
             style={{
-              fontSize: 22,
+              fontSize: 28,
               color: '#6B5B4E',
-              lineHeight: 1.5,
-              maxWidth: 900,
-              marginBottom: 24,
+              lineHeight: 1.45,
+              maxWidth: 950,
+              marginBottom: 28,
             }}
           >
-            {description.length > 100 ? description.slice(0, 100) + '...' : description}
+            {description.length > 90 ? description.slice(0, 90) + '...' : description}
           </div>
         )}
 
@@ -111,7 +111,7 @@ export default function handler(req: Request) {
             display: 'flex',
             alignItems: 'center',
             gap: 24,
-            fontSize: 18,
+            fontSize: 22,
             color: '#8B7B6E',
           }}
         >
@@ -127,11 +127,11 @@ export default function handler(req: Request) {
               <span style={{ opacity: 0.3 }}>·</span>
               <span
                 style={{
-                  fontSize: 14,
+                  fontSize: 18,
                   color: accent,
                   border: `1.5px solid ${accent}50`,
                   borderRadius: 6,
-                  padding: '3px 12px',
+                  padding: '4px 14px',
                 }}
               >
                 {category}
@@ -146,7 +146,7 @@ export default function handler(req: Request) {
             position: 'absolute',
             bottom: 40,
             right: 80,
-            fontSize: 14,
+            fontSize: 18,
             color: accent,
             opacity: 0.25,
           }}
