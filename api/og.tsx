@@ -34,7 +34,7 @@ export default function handler(req: Request) {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          padding: '80px 80px',
+          padding: '60px 90px',
           fontFamily: 'monospace',
           position: 'relative',
         }}
@@ -46,7 +46,7 @@ export default function handler(req: Request) {
             left: 0,
             top: 0,
             bottom: 0,
-            width: 6,
+            width: 8,
             background: accent,
           }}
         />
@@ -55,20 +55,20 @@ export default function handler(req: Request) {
         <div
           style={{
             position: 'absolute',
-            top: 48,
-            left: 80,
+            top: 44,
+            left: 90,
             display: 'flex',
             alignItems: 'center',
-            gap: 10,
-            fontSize: 20,
+            gap: 12,
+            fontSize: 26,
             color: accent,
             opacity: 0.5,
           }}
         >
           <div
             style={{
-              width: 8,
-              height: 8,
+              width: 10,
+              height: 10,
               borderRadius: '50%',
               background: accent,
             }}
@@ -79,12 +79,12 @@ export default function handler(req: Request) {
         {/* Agent name */}
         <div
           style={{
-            fontSize: 82,
+            fontSize: 110,
             fontWeight: 700,
             color: '#3D2B1F',
-            lineHeight: 1.05,
-            letterSpacing: '-0.03em',
-            marginBottom: 20,
+            lineHeight: 1,
+            letterSpacing: '-0.04em',
+            marginBottom: 24,
           }}
         >
           {name}
@@ -94,14 +94,14 @@ export default function handler(req: Request) {
         {description && (
           <div
             style={{
-              fontSize: 28,
+              fontSize: 36,
               color: '#6B5B4E',
-              lineHeight: 1.45,
-              maxWidth: 950,
-              marginBottom: 28,
+              lineHeight: 1.4,
+              maxWidth: 1000,
+              marginBottom: 32,
             }}
           >
-            {description.length > 90 ? description.slice(0, 90) + '...' : description}
+            {description.length > 80 ? description.slice(0, 80) + '...' : description}
           </div>
         )}
 
@@ -110,12 +110,12 @@ export default function handler(req: Request) {
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 24,
-            fontSize: 22,
+            gap: 28,
+            fontSize: 28,
             color: '#8B7B6E',
           }}
         >
-          <span>{author}</span>
+          <span style={{ fontWeight: 600 }}>{author}</span>
           {repoShort && (
             <>
               <span style={{ opacity: 0.3 }}>·</span>
@@ -127,11 +127,11 @@ export default function handler(req: Request) {
               <span style={{ opacity: 0.3 }}>·</span>
               <span
                 style={{
-                  fontSize: 18,
+                  fontSize: 24,
                   color: accent,
-                  border: `1.5px solid ${accent}50`,
-                  borderRadius: 6,
-                  padding: '4px 14px',
+                  border: `2px solid ${accent}50`,
+                  borderRadius: 8,
+                  padding: '4px 16px',
                 }}
               >
                 {category}
@@ -144,11 +144,11 @@ export default function handler(req: Request) {
         <div
           style={{
             position: 'absolute',
-            bottom: 40,
-            right: 80,
-            fontSize: 18,
+            bottom: 36,
+            right: 90,
+            fontSize: 22,
             color: accent,
-            opacity: 0.25,
+            opacity: 0.3,
           }}
         >
           registry.gitagent.sh
