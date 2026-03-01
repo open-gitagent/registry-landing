@@ -24,9 +24,7 @@ export function AgentCard({ agent, index = 0 }: { agent: Agent; index?: number }
           {agent.banner ? (
             <img src={agent.banner} alt="" className="w-full h-32 object-cover" loading="lazy" />
           ) : (
-            <div className="h-32">
-              <GeneratedBanner name={agent.name} author={agent.author} repo={agent.repository} category={agent.category} />
-            </div>
+            <GeneratedBanner name={agent.name} author={agent.author} repo={agent.repository} category={agent.category} />
           )}
         </div>
 
