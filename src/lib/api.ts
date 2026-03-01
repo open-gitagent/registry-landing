@@ -12,7 +12,14 @@ export interface Agent {
   adapters: string[];
   icon: string | null;
   banner: string | null;
-  social_preview: string | null;
+  github: {
+    stars: number;
+    forks: number;
+    issues: number;
+    language: string | null;
+    avatar: string;
+    description: string | null;
+  } | null;
   readme: string;
   added_at: string;
 }

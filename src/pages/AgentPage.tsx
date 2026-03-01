@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ArrowLeft, ExternalLink, GitBranch, Shield, BookOpen } from "lucide-react";
+import { ArrowLeft, ExternalLink, GitBranch, Shield, BookOpen, Star, GitFork, CircleDot } from "lucide-react";
 import { useAgents } from "../hooks/useAgents";
 import { fetchReadme, CATEGORY_LABELS } from "../lib/api";
 import { InstallCommand } from "../components/InstallCommand";
@@ -88,7 +88,7 @@ export default function AgentPage() {
 
   const repoPath = agent.path ? `${agent.repository}/tree/main/${agent.path}` : agent.repository;
   const repoShort = agent.repository.replace("https://github.com/", "");
-  const previewImage = agent.banner ?? agent.social_preview;
+  const gh = agent.github;
 
   return (
     <section className="pt-24 pb-20 px-6">
@@ -98,13 +98,6 @@ export default function AgentPage() {
         </Link>
 
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
-          {/* ===== GitHub repo preview image ===== */}
-          {previewImage && (
-            <a href={repoPath} target="_blank" rel="noopener noreferrer" className="block rounded-lg overflow-hidden border border-border mb-6 hover:border-primary/30 transition-colors" style={{ boxShadow: "2px 3px 0px hsl(var(--border))" }}>
-              <img src={previewImage} alt={`${agent.name} repository`} className="w-full" loading="lazy" />
-            </a>
-          )}
-
           {/* ===== Repo header ===== */}
           <div className="paper-card p-6 mb-6">
             {/* Row 1: icon + name + badges */}
@@ -129,15 +122,24 @@ export default function AgentPage() {
               {agent.description}
             </p>
 
-            {/* Row 3: link to repo */}
-            <a
-              href={repoPath}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs text-primary font-body hover:underline relative z-10"
-            >
-              <ExternalLink className="w-3 h-3" /> github.com/{repoShort}
-            </a>
+            {/* Row 3: link to repo + stats */}
+            <div className="flex items-center gap-5 relative z-10">
+              <a
+                href={repoPath}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs text-primary font-body hover:underline"
+              >
+                <ExternalLink className="w-3 h-3" /> github.com/{repoShort}
+              </a>
+              {gh && (
+                <div className="flex items-center gap-4 text-xs text-muted-foreground font-body">
+                  <span className="flex items-center gap-1"><Star className="w-3 h-3" /> {gh.stars}</span>
+                  <span className="flex items-center gap-1"><GitFork className="w-3 h-3" /> {gh.forks}</span>
+                  <span className="flex items-center gap-1"><CircleDot className="w-3 h-3" /> {gh.issues}</span>
+                </div>
+              )}
+            </div>
 
             {/* Row 4: tags */}
             {agent.tags.length > 0 && (
