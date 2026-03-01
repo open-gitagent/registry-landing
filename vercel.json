@@ -6,11 +6,18 @@
         {
           "type": "header",
           "key": "user-agent",
-          "value": ".*(bot|crawler|spider|slurp|facebookexternalhit|linkedinbot|twitterbot|slackbot|discordbot|whatsapp|telegrambot|pinterest|embedly|quora|redditbot|applebot).*"
+          "value": "(?i).*(bot|crawler|spider|slurp|facebookexternalhit|linkedinbot|twitterbot|slackbot|discordbot|whatsapp|telegrambot|pinterest|embedly|quora|redditbot|applebot).*"
         }
       ],
       "destination": "/api/meta?author=:author&name=:name"
     },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
   ]
 }

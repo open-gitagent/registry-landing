@@ -1,5 +1,3 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-
 const INDEX_URL = 'https://raw.githubusercontent.com/open-gitagent/registry/main/index.json';
 
 interface Agent {
@@ -11,11 +9,13 @@ interface Agent {
   banner: string | null;
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const { author, name } = req.query as { author?: string; name?: string };
+export default async function handler(req: Request): Promise<Response> {
+  const url = new URL(req.url);
+  const author = url.searchParams.get('author') || '';
+  const name = url.searchParams.get('name') || '';
 
   if (!author || !name) {
-    return res.redirect(301, '/');
+    return Response.redirect(new URL('/', url.origin).toString(), 301);
   }
 
   // Fetch agent data
@@ -32,45 +32,53 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const title = agent
     ? `${agent.name} by ${agent.author} — gitagent registry`
-    : 'gitagent registry';
+    : `${name} by ${author} — gitagent registry`;
   const description = agent?.description ?? 'Discover, share, and install git-native AI agents.';
 
-  // OG image — agent banner or generated
-  const origin = `https://${req.headers.host}`;
+  const origin = url.origin;
   const ogImage = agent?.banner
     ? agent.banner
     : `${origin}/api/og?name=${encodeURIComponent(agent?.name ?? name)}&author=${encodeURIComponent(agent?.author ?? author)}&repo=${encodeURIComponent(agent?.repository ?? '')}&desc=${encodeURIComponent(description)}&category=${encodeURIComponent(agent?.category ?? '')}`;
 
   const pageUrl = `${origin}/agent/${author}/${name}`;
 
-  // Serve a minimal HTML page with OG tags that loads the SPA
   const html = `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${title}</title>
-  <meta name="description" content="${description}" />
+  <title>${escapeHtml(title)}</title>
+  <meta name="description" content="${escapeHtml(description)}" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="${pageUrl}" />
-  <meta property="og:title" content="${title}" />
-  <meta property="og:description" content="${description}" />
+  <meta property="og:title" content="${escapeHtml(title)}" />
+  <meta property="og:description" content="${escapeHtml(description)}" />
   <meta property="og:image" content="${ogImage}" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="${title}" />
-  <meta name="twitter:description" content="${description}" />
+  <meta name="twitter:title" content="${escapeHtml(title)}" />
+  <meta name="twitter:description" content="${escapeHtml(description)}" />
   <meta name="twitter:image" content="${ogImage}" />
-  <meta http-equiv="refresh" content="0;url=${pageUrl}" />
   <link rel="canonical" href="${pageUrl}" />
+  <meta http-equiv="refresh" content="0;url=${pageUrl}" />
 </head>
 <body>
-  <p>Redirecting to <a href="${pageUrl}">${title}</a>...</p>
+  <p>Redirecting to <a href="${pageUrl}">${escapeHtml(title)}</a>...</p>
 </body>
 </html>`;
 
-  res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
-  return res.status(200).send(html);
+  return new Response(html, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+    },
+  });
 }
+
+function escapeHtml(str: string): string {
+  return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+export const config = { runtime: 'edge' };

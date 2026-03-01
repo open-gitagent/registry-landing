@@ -1,5 +1,4 @@
 import { ImageResponse } from '@vercel/og';
-import type { VercelRequest } from '@vercel/node';
 
 export const config = { runtime: 'edge' };
 
@@ -30,8 +29,8 @@ const PALETTES = [
   ['#6E5A50', '#917A6C', '#B09A88'],
 ];
 
-export default function handler(req: VercelRequest) {
-  const { searchParams } = new URL(req.url!);
+export default function handler(req: Request) {
+  const { searchParams } = new URL(req.url);
   const name = searchParams.get('name') || 'agent';
   const author = searchParams.get('author') || '';
   const repo = searchParams.get('repo') || '';
