@@ -2,13 +2,6 @@
   "rewrites": [
     {
       "source": "/agent/:author/:name",
-      "has": [
-        {
-          "type": "header",
-          "key": "user-agent",
-          "value": "(?i).*(bot|crawler|spider|slurp|facebookexternalhit|linkedinbot|twitterbot|slackbot|discordbot|whatsapp|telegrambot|pinterest|embedly|quora|redditbot|applebot).*"
-        }
-      ],
       "destination": "/api/meta?author=:author&name=:name"
     },
     {

@@ -35,38 +35,47 @@ export default async function handler(req: Request): Promise<Response> {
     : `${name} by ${author} — gitagent registry`;
   const description = agent?.description ?? 'Discover, share, and install git-native AI agents.';
 
-  const origin = url.origin;
+  const origin = 'https://registry.gitagent.sh';
   const ogImage = agent?.banner
     ? agent.banner
     : `${origin}/api/og?name=${encodeURIComponent(agent?.name ?? name)}&author=${encodeURIComponent(agent?.author ?? author)}&repo=${encodeURIComponent(agent?.repository ?? '')}&desc=${encodeURIComponent(description)}&category=${encodeURIComponent(agent?.category ?? '')}`;
 
   const pageUrl = `${origin}/agent/${author}/${name}`;
 
-  const html = `<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${escapeHtml(title)}</title>
-  <meta name="description" content="${escapeHtml(description)}" />
+  // Fetch the built index.html and inject OG tags
+  let html: string;
+  try {
+    const htmlRes = await fetch(new URL('/index.html', url.origin));
+    html = await htmlRes.text();
+  } catch {
+    // Fallback if fetch fails
+    html = '<!doctype html><html><head></head><body><div id="root"></div></body></html>';
+  }
+
+  // Replace existing meta tags with agent-specific ones
+  const ogTags = `
+  <title>${esc(title)}</title>
+  <meta name="description" content="${esc(description)}" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="${pageUrl}" />
-  <meta property="og:title" content="${escapeHtml(title)}" />
-  <meta property="og:description" content="${escapeHtml(description)}" />
+  <meta property="og:title" content="${esc(title)}" />
+  <meta property="og:description" content="${esc(description)}" />
   <meta property="og:image" content="${ogImage}" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="${escapeHtml(title)}" />
-  <meta name="twitter:description" content="${escapeHtml(description)}" />
+  <meta name="twitter:title" content="${esc(title)}" />
+  <meta name="twitter:description" content="${esc(description)}" />
   <meta name="twitter:image" content="${ogImage}" />
-  <link rel="canonical" href="${pageUrl}" />
-  <meta http-equiv="refresh" content="0;url=${pageUrl}" />
-</head>
-<body>
-  <p>Redirecting to <a href="${pageUrl}">${escapeHtml(title)}</a>...</p>
-</body>
-</html>`;
+  <link rel="canonical" href="${pageUrl}" />`;
+
+  // Remove existing title + og/twitter meta, inject new ones
+  html = html
+    .replace(/<title>.*?<\/title>/, '')
+    .replace(/<meta\s+name="description"[^>]*>/g, '')
+    .replace(/<meta\s+property="og:[^>]*>/g, '')
+    .replace(/<meta\s+name="twitter:[^>]*>/g, '')
+    .replace('</head>', `${ogTags}\n</head>`);
 
   return new Response(html, {
     status: 200,
@@ -77,7 +86,7 @@ export default async function handler(req: Request): Promise<Response> {
   });
 }
 
-function escapeHtml(str: string): string {
+function esc(str: string): string {
   return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
