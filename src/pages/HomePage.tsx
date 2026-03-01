@@ -6,6 +6,7 @@ import { useAgents } from "../hooks/useAgents";
 import { CATEGORY_LABELS } from "../lib/api";
 import { AgentGrid } from "../components/AgentGrid";
 import { SearchBar } from "../components/SearchBar";
+import { DiscordBanner } from "../components/DiscordBanner";
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   "developer-tools": <Code className="w-4 h-4" />,
@@ -137,6 +138,8 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+
+      <DiscordBanner />
     </div>
   );
 }
