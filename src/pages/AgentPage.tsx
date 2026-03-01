@@ -3,10 +3,37 @@ import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ArrowLeft, ExternalLink, GitBranch, Shield, BookOpen, Star, GitFork, CircleDot } from "lucide-react";
+import { ArrowLeft, ExternalLink, GitBranch, Shield, BookOpen, Star, GitFork, CircleDot, Check, Link2 } from "lucide-react";
 import { useAgents } from "../hooks/useAgents";
 import { fetchReadme, CATEGORY_LABELS } from "../lib/api";
 import { InstallCommand } from "../components/InstallCommand";
+
+function ShareButton({ url }: { url: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <button
+      onClick={handleCopy}
+      className="ml-auto inline-flex items-center gap-1.5 text-[11px] sketch-border rounded-md px-2.5 py-1 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors font-body shrink-0"
+    >
+      {copied ? (
+        <>
+          <Check className="w-3 h-3 text-primary" /> Copied
+        </>
+      ) : (
+        <>
+          <Link2 className="w-3 h-3" /> Share
+        </>
+      )}
+    </button>
+  );
+}
 
 function getInitials(name: string) {
   return name.split("-").slice(0, 2).map((w) => w[0]?.toUpperCase()).join("");
@@ -111,9 +138,10 @@ export default function AgentPage() {
                   </div>
                 )}
               </div>
-              <div className="flex items-center gap-3 min-w-0 flex-wrap">
+              <div className="flex items-center gap-3 min-w-0 flex-wrap flex-1">
                 <h1 className="font-heading text-xl font-bold text-primary">{agent.author} / {agent.name}</h1>
                 <span className="text-[10px] px-2 py-0.5 rounded-full border border-border text-muted-foreground font-body">Public</span>
+                <ShareButton url={`${window.location.origin}/agent/${agent.author}/${agent.name}`} />
               </div>
             </div>
 
