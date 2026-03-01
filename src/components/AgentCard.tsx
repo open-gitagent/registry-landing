@@ -15,11 +15,13 @@ export function AgentCard({ agent, index = 0 }: { agent: Agent; index?: number }
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.04 }}
+      className="h-full"
     >
       <Link
         to={`/agent/${agent.author}/${agent.name}`}
-        className="block paper-card p-4 hover:border-primary/40 transition-colors"
+        className="flex flex-col paper-card p-4 hover:border-primary/40 transition-colors h-full"
       >
+        {/* Banner */}
         <div className="rounded overflow-hidden mb-3 -mt-1 -mx-1 border border-border">
           {agent.banner ? (
             <img src={agent.banner} alt="" className="w-full h-32 object-cover" loading="lazy" />
@@ -28,6 +30,7 @@ export function AgentCard({ agent, index = 0 }: { agent: Agent; index?: number }
           )}
         </div>
 
+        {/* Header */}
         <div className="flex items-start gap-3 mb-2 relative z-10">
           <div className="w-9 h-9 rounded-md shrink-0 overflow-hidden">
             {agent.icon ? (
@@ -44,10 +47,15 @@ export function AgentCard({ agent, index = 0 }: { agent: Agent; index?: number }
           </div>
         </div>
 
+        {/* Description — fixed 2 lines */}
         <p className="text-xs text-muted-foreground leading-relaxed font-body line-clamp-2 relative z-10 mb-3">
           {agent.description}
         </p>
 
+        {/* Spacer pushes footer to bottom */}
+        <div className="flex-1" />
+
+        {/* Category + version */}
         <div className="flex items-center justify-between relative z-10">
           <span className="text-[10px] sketch-border rounded px-2 py-0.5 text-primary font-body font-medium">
             {CATEGORY_LABELS[agent.category] ?? agent.category}
@@ -55,12 +63,13 @@ export function AgentCard({ agent, index = 0 }: { agent: Agent; index?: number }
           <span className="text-[10px] text-muted-foreground font-body">v{agent.version}</span>
         </div>
 
+        {/* Tags — single line, overflow hidden */}
         {agent.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-2 relative z-10">
+          <div className="flex gap-1 mt-2 relative z-10 overflow-hidden h-5">
             {agent.tags.slice(0, 3).map((tag) => (
-              <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded bg-accent/50 text-muted-foreground font-body">{tag}</span>
+              <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded bg-accent/50 text-muted-foreground font-body whitespace-nowrap shrink-0">{tag}</span>
             ))}
-            {agent.tags.length > 3 && <span className="text-[10px] text-muted-foreground/50">+{agent.tags.length - 3}</span>}
+            {agent.tags.length > 3 && <span className="text-[10px] text-muted-foreground/50 shrink-0">+{agent.tags.length - 3}</span>}
           </div>
         )}
       </Link>
