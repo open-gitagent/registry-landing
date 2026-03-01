@@ -93,18 +93,6 @@ export default function AgentPage() {
     ? `${agent.repository}/tree/main/${agent.path}`
     : agent.repository;
 
-  const cloneCmd = agent.path
-    ? `git clone ${agent.repository} && cd ${agent.repository.split("/").pop()}/${agent.path}`
-    : `git clone ${agent.repository}`;
-
-  const installTabs = [
-    { label: "git clone", command: cloneCmd },
-    {
-      label: "gitagent run",
-      command: `gitagent run -r ${agent.repository}${agent.path ? ` -p ${agent.path}` : ""}`,
-    },
-  ];
-
   return (
     <section style={{ paddingTop: 100 }}>
       <div className="container">
@@ -164,9 +152,13 @@ export default function AgentPage() {
               </span>
             </div>
 
-            {/* Install */}
-            <h2 style={{ fontSize: "1.2rem", marginBottom: 16 }}>Install</h2>
-            <InstallCommand tabs={installTabs} />
+            {/* Install & Export */}
+            <h2 style={{ fontSize: "1.2rem", marginBottom: 16 }}>Quick Start</h2>
+            <InstallCommand
+              repoUrl={agent.repository}
+              path={agent.path}
+              adapters={agent.adapters}
+            />
 
             {/* README */}
             <div className="readme-content">

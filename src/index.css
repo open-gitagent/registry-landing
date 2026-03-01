@@ -577,6 +577,58 @@ section { padding: var(--section-pad) 0; position: relative; }
 }
 
 /* ============================================================
+   PROMPT LINES (Quick Start terminal)
+   ============================================================ */
+.prompt-line {
+  color: var(--text);
+  padding: 2px 0;
+}
+.prompt-line .prompt { color: var(--green); }
+.prompt-line .comment { color: var(--text-faint); }
+
+/* ============================================================
+   EXPORT CARDS
+   ============================================================ */
+.export-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.export-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  transition: all 0.3s var(--ease);
+}
+.export-card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-green);
+  box-shadow: 0 0 30px var(--green-glow), 0 8px 24px rgba(0,0,0,0.2);
+  transform: translateY(-2px);
+}
+.export-card h3 {
+  margin-bottom: 8px;
+  font-size: 1.05rem;
+}
+.export-card p {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+.mini-terminal {
+  background: var(--bg-terminal);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--green);
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+/* ============================================================
    AGENT CARD
    ============================================================ */
 .agent-card {
@@ -1209,6 +1261,7 @@ section { padding: var(--section-pad) 0; position: relative; }
   }
   .nav-hamburger { display: flex; }
   .agent-grid { grid-template-columns: 1fr; }
+  .export-grid { grid-template-columns: 1fr; }
   .category-grid { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr; gap: 32px; }
   .hero { min-height: auto; padding-top: 100px; padding-bottom: 80px; }
