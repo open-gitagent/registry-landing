@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import type { Agent } from "../lib/api";
 import { CATEGORY_LABELS } from "../lib/api";
+import { GeneratedBanner } from "./GeneratedBanner";
 
 function getInitials(name: string) {
   return name.split("-").slice(0, 2).map((w) => w[0]?.toUpperCase()).join("");
@@ -19,11 +20,15 @@ export function AgentCard({ agent, index = 0 }: { agent: Agent; index?: number }
         to={`/agent/${agent.author}/${agent.name}`}
         className="block paper-card p-4 hover:border-primary/40 transition-colors"
       >
-        {agent.banner && (
-          <div className="rounded overflow-hidden mb-3 -mt-1 -mx-1 border border-border">
+        <div className="rounded overflow-hidden mb-3 -mt-1 -mx-1 border border-border">
+          {agent.banner ? (
             <img src={agent.banner} alt="" className="w-full h-32 object-cover" loading="lazy" />
-          </div>
-        )}
+          ) : (
+            <div className="h-32">
+              <GeneratedBanner name={agent.name} author={agent.author} />
+            </div>
+          )}
+        </div>
 
         <div className="flex items-start gap-3 mb-2 relative z-10">
           <div className="w-9 h-9 rounded-md shrink-0 overflow-hidden">

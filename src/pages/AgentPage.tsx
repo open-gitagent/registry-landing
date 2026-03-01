@@ -7,6 +7,7 @@ import { ArrowLeft, ExternalLink, GitBranch, Shield } from "lucide-react";
 import { useAgents } from "../hooks/useAgents";
 import { fetchReadme, CATEGORY_LABELS } from "../lib/api";
 import { InstallCommand } from "../components/InstallCommand";
+import { GeneratedBanner } from "../components/GeneratedBanner";
 
 function getInitials(name: string) {
   return name.split("-").slice(0, 2).map((w) => w[0]?.toUpperCase()).join("");
@@ -76,11 +77,13 @@ export default function AgentPage() {
         </Link>
 
         {/* Banner */}
-        {agent.banner && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="rounded-lg overflow-hidden border border-border mb-6" style={{ boxShadow: "2px 3px 0px hsl(var(--border))" }}>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="rounded-lg overflow-hidden border border-border mb-6" style={{ boxShadow: "2px 3px 0px hsl(var(--border))" }}>
+          {agent.banner ? (
             <img src={agent.banner} alt={`${agent.name} banner`} className="w-full" />
-          </motion.div>
-        )}
+          ) : (
+            <GeneratedBanner name={agent.name} author={agent.author} />
+          )}
+        </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-8 items-start">
           {/* Main */}
