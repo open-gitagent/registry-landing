@@ -12,6 +12,7 @@ export interface Agent {
   adapters: string[];
   icon: string | null;
   banner: string | null;
+  social_preview: string | null;
   readme: string;
   added_at: string;
 }

@@ -4,14 +4,9 @@ import { ExternalLink } from "lucide-react";
 import type { Agent } from "../lib/api";
 import { CATEGORY_LABELS } from "../lib/api";
 
-function getGitHubOgImage(repoUrl: string): string {
-  const repoPath = repoUrl.replace("https://github.com/", "");
-  return `https://opengraph.githubassets.com/1/${repoPath}`;
-}
-
 export function AgentCard({ agent, index = 0 }: { agent: Agent; index?: number }) {
   const repoShort = agent.repository.replace("https://github.com/", "");
-  const ogImage = agent.banner ?? getGitHubOgImage(agent.repository);
+  const previewImage = agent.banner ?? agent.social_preview;
 
   return (
     <motion.div
@@ -27,12 +22,14 @@ export function AgentCard({ agent, index = 0 }: { agent: Agent; index?: number }
       >
         {/* GitHub repo OG image */}
         <div className="border-b border-border overflow-hidden">
-          <img
-            src={ogImage}
-            alt={agent.name}
-            className="w-full h-40 object-cover"
-            loading="lazy"
-          />
+          {previewImage && (
+            <img
+              src={previewImage}
+              alt={agent.name}
+              className="w-full h-40 object-cover"
+              loading="lazy"
+            />
+          )}
         </div>
 
         {/* Content */}
