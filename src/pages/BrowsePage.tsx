@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import { motion } from "framer-motion";
 import { useAgents } from "../hooks/useAgents";
 import { search } from "../lib/search";
 import { AgentGrid } from "../components/AgentGrid";
@@ -11,9 +12,7 @@ export default function BrowsePage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
-  const [category, setCategory] = useState(
-    searchParams.get("category") ?? ""
-  );
+  const [category, setCategory] = useState(searchParams.get("category") ?? "");
   const [adapter, setAdapter] = useState(searchParams.get("adapter") ?? "");
 
   useEffect(() => {
@@ -39,41 +38,21 @@ export default function BrowsePage() {
   }, [agents, query, category, adapter]);
 
   return (
-    <section style={{ paddingTop: 100 }}>
-      <div className="container">
-        <h1 style={{ fontSize: "clamp(1.8rem, 3vw, 2.5rem)" }}>
-          Browse Agents
-        </h1>
-        <p className="text-muted" style={{ marginTop: 8 }}>
-          Search and filter the full agent catalog.
+    <section className="pt-24 pb-20 px-6">
+      <div className="mx-auto max-w-6xl">
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
+          <h1 className="text-2xl font-bold text-foreground mb-2">Browse Agents</h1>
+          <p className="text-sm text-muted-foreground font-body mb-8">Search and filter the full agent catalog.</p>
+        </motion.div>
+
+        <SearchBar value={query} onChange={setQuery} placeholder="Search by name, description, tags..." />
+        <FilterBar selectedCategory={category} onCategoryChange={setCategory} selectedAdapter={adapter} onAdapterChange={setAdapter} adapters={allAdapters} />
+
+        <p className="text-xs text-muted-foreground font-body mt-6 mb-4">
+          {loading ? "Loading..." : `${filtered.length} ${filtered.length === 1 ? "agent" : "agents"} found`}
         </p>
 
-        <div style={{ marginTop: 32 }}>
-          <SearchBar
-            value={query}
-            onChange={setQuery}
-            placeholder="Search by name, description, tags..."
-          />
-          <FilterBar
-            selectedCategory={category}
-            onCategoryChange={setCategory}
-            selectedAdapter={adapter}
-            onAdapterChange={setAdapter}
-            adapters={allAdapters}
-          />
-        </div>
-
-        <div className="results-count">
-          {loading
-            ? "Loading..."
-            : `${filtered.length} ${filtered.length === 1 ? "agent" : "agents"} found`}
-        </div>
-
-        <AgentGrid
-          agents={filtered}
-          loading={loading}
-          emptyMessage="No agents match your search. Try different keywords or filters."
-        />
+        <AgentGrid agents={filtered} loading={loading} emptyMessage="No agents match your search. Try different keywords or filters." />
       </div>
     </section>
   );

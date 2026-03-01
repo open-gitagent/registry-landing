@@ -1,120 +1,102 @@
 import { useState } from "react";
-import { WindowDots } from "./Icons";
+import { Copy, Check } from "lucide-react";
+
+const ADAPTERS = [
+  { label: "Claude Code", flag: "claude" },
+  { label: "Lyzr", flag: "lyzr" },
+  { label: "Nanobot", flag: "nanobot" },
+  { label: "OpenClaw", flag: "openclaw" },
+];
 
 interface Props {
   repoUrl: string;
-  path?: string;
-  adapters: string[];
 }
 
-const ADAPTER_LABELS: Record<string, string> = {
-  "claude-code": "Claude Code",
-  openai: "OpenAI Agents SDK",
-  crewai: "CrewAI",
-  "system-prompt": "System Prompt",
-  openclaw: "OpenClaw",
-  nanobot: "Nanobot",
-  lyzr: "Lyzr",
-  github: "GitHub Models",
-  git: "Git",
-};
-
-const ADAPTER_DESCRIPTIONS: Record<string, string> = {
-  "claude-code": "Export to CLAUDE.md and skills for Claude Code projects.",
-  openai: "Generate OpenAI Agents SDK-compatible agent definitions.",
-  crewai: "Export as CrewAI agent and task configurations.",
-  "system-prompt": "Extract a single system prompt for any LLM.",
-  openclaw: "Export for the OpenClaw agent framework.",
-  nanobot: "Generate Nanobot-compatible configuration.",
-  lyzr: "Export as a Lyzr agent definition.",
-  github: "Export for GitHub Models integration.",
-  git: "Export as a portable git-native agent.",
-};
-
-export function InstallCommand({ repoUrl, path, adapters }: Props) {
+export function InstallCommand({ repoUrl }: Props) {
   const [copied, setCopied] = useState(false);
+  const [selectedAdapter, setSelectedAdapter] = useState(ADAPTERS[0]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const repoName = repoUrl.split("/").pop() ?? "agent";
-  const cdPath = path ? `${repoName}/${path}` : repoName;
+  const cmd = `npx @open-gitagent/gitagent@0.1.7 run -r ${repoUrl} -a ${selectedAdapter.flag}`;
 
-  const commands = [
-    `npm install -g gitagent`,
-    `git clone ${repoUrl}`,
-    `cd ${cdPath}`,
-    `gitagent validate`,
-  ];
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(commands.join("\n"));
+  const handleCopy = () => {
+    navigator.clipboard.writeText(cmd);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <>
-      {/* Quick Start Terminal */}
-      <div className="terminal" style={{ maxWidth: 680 }}>
-        <div className="terminal-bar">
-          <WindowDots />
-          <span className="terminal-title">terminal</span>
-        </div>
-        <div className="terminal-body">
+    <div className="code-block sketch-border border-primary/30 relative !overflow-visible">
+      <div className="terminal-header">
+        <span className="terminal-dot bg-primary/40" />
+        <span className="terminal-dot bg-primary/30" />
+        <span className="terminal-dot bg-primary/20" />
+        <span className="ml-3 text-xs text-muted-foreground font-body">terminal</span>
+        <button
+          onClick={handleCopy}
+          className="ml-auto text-muted-foreground/50 hover:text-foreground transition-colors"
+          aria-label="Copy command"
+        >
+          {copied ? <Check className="w-3.5 h-3.5 text-primary" /> : <Copy className="w-3.5 h-3.5" />}
+        </button>
+      </div>
+
+      <div className="flex items-center gap-2 text-xs sm:text-sm leading-6 sm:leading-7 font-body break-all sm:break-normal">
+        <span className="flex-1 cursor-pointer" onClick={handleCopy}>
+          <span className="text-primary">$ </span>
+          <span className="text-foreground font-medium">npx @open-gitagent/gitagent@0.1.7 run</span>
+          <span className="text-muted-foreground"> -r </span>
+          <span className="text-primary/70">{repoUrl}</span>
+          <span className="text-muted-foreground"> -a </span>
+          <span className="text-foreground font-medium">{selectedAdapter.flag}</span>
+        </span>
+
+        {/* Adapter dropdown */}
+        <div className="relative shrink-0">
           <button
-            className={`copy-btn${copied ? " copied" : ""}`}
-            onClick={handleCopy}
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className="inline-flex items-center gap-1.5 text-[10px] font-medium text-primary sketch-border rounded px-2 py-1 hover:bg-accent transition-colors font-body"
           >
-            {copied ? "Copied!" : "Copy"}
+            {selectedAdapter.label}
+            <svg className="w-2.5 h-2.5" viewBox="0 0 10 6" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+              <path d="m1 1 4 4 4-4" />
+            </svg>
           </button>
-          <pre>
-            {"\n"}
-            <div className="prompt-line">
-              <span className="prompt">$ </span>npm install -g gitagent
-              {"          "}
-              <span className="comment"># Install the CLI</span>
+          {dropdownOpen && (
+            <div className="absolute right-0 bottom-full mb-1 z-50 bg-background border border-border rounded-md shadow-lg w-32">
+              {ADAPTERS.map((a) => (
+                <button
+                  key={a.flag}
+                  onClick={() => { setSelectedAdapter(a); setDropdownOpen(false); }}
+                  className={`block w-full text-left px-3 py-1.5 text-xs font-body hover:bg-accent transition-colors ${
+                    a.flag === selectedAdapter.flag ? "text-primary font-medium" : "text-foreground"
+                  }`}
+                >
+                  {a.label}
+                </button>
+              ))}
             </div>
-            <div className="prompt-line">
-              <span className="prompt">$ </span>git clone {repoUrl}
-            </div>
-            <div className="prompt-line">
-              <span className="prompt">$ </span>cd {cdPath}
-              {"                              "}
-            </div>
-            <div className="prompt-line">
-              <span className="prompt">$ </span>gitagent validate
-              {"                 "}
-              <span className="comment"># Check it's valid</span>
-            </div>
-            <div className="prompt-line">
-              <span className="prompt">$ </span>gitagent export --format
-              claude-code{"  "}
-              <span className="comment"># Export for Claude</span>
-            </div>
-          </pre>
+          )}
         </div>
       </div>
 
-      {/* Export Grid */}
-      {adapters.length > 0 && (
-        <div style={{ marginTop: 40 }}>
-          <h2 style={{ fontSize: "1.2rem", marginBottom: 20 }}>
-            Export Anywhere
-          </h2>
-          <div className="export-grid">
-            {adapters.map((adapter) => (
-              <div key={adapter} className="export-card">
-                <h3>{ADAPTER_LABELS[adapter] ?? adapter}</h3>
-                <p>
-                  {ADAPTER_DESCRIPTIONS[adapter] ??
-                    `Export for the ${adapter} framework.`}
-                </p>
-                <div className="mini-terminal">
-                  $ gitagent export --format {adapter}
-                </div>
-              </div>
-            ))}
-          </div>
+      <div className="mt-3 pt-3 border-t border-border space-y-1">
+        <div className="text-[11px] text-muted-foreground/60 font-body">
+          <span className="text-muted-foreground/40">→</span> Clones the repo (cached at <code className="text-muted-foreground/50">~/.gitagent/cache/</code>)
         </div>
+        <div className="text-[11px] text-muted-foreground/60 font-body">
+          <span className="text-muted-foreground/40">→</span> Reads <code className="text-muted-foreground/50">agent.yaml</code> + <code className="text-muted-foreground/50">SOUL.md</code> + skills
+        </div>
+        <div className="text-[11px] text-muted-foreground/60 font-body">
+          <span className="text-muted-foreground/40">→</span> Launches the agent with the selected adapter
+        </div>
+      </div>
+
+      {copied && (
+        <span className="absolute top-3 right-10 text-[10px] text-primary font-body animate-fade-in">
+          Copied!
+        </span>
       )}
-    </>
+    </div>
   );
 }

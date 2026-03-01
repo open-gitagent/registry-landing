@@ -2,86 +2,45 @@ import { Link } from "react-router-dom";
 
 export function Footer() {
   return (
-    <footer className="footer">
-      <div className="container">
-        <div className="footer-grid">
-          <div className="footer-brand">
-            <div className="nav-logo">
-              <span className="prompt">$ </span>gitagent
-              <span style={{ color: "var(--text-faint)", fontWeight: 400 }}>
-                /registry
-              </span>
-            </div>
-            <p>
-              The public registry for git-native AI agents. Discover, share, and
-              install agents built with the gitagent standard.
+    <footer className="border-t border-border py-12 px-6">
+      <div className="mx-auto max-w-6xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-12">
+          <div>
+            <span className="font-heading text-sm font-semibold text-foreground mb-3 block">
+              <span className="text-primary">✦</span> gitagent/registry
+            </span>
+            <p className="text-xs text-muted-foreground leading-relaxed font-body">
+              The public registry for git-native AI agents.
             </p>
           </div>
 
           <div>
-            <h4>Registry</h4>
-            <ul>
-              <li>
-                <Link to="/browse">Browse Agents</Link>
-              </li>
-              <li>
-                <Link to="/submit">Submit an Agent</Link>
-              </li>
-              <li>
-                <a
-                  href="https://github.com/open-gitagent/registry/blob/main/CONTRIBUTING.md"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Contributing
-                </a>
-              </li>
-            </ul>
+            <span className="text-xs font-heading font-semibold text-foreground mb-3 block">Registry</span>
+            <div className="space-y-2">
+              <Link to="/browse" className="block text-xs text-muted-foreground hover:text-foreground transition-colors font-body">Browse Agents</Link>
+              <Link to="/submit" className="block text-xs text-muted-foreground hover:text-foreground transition-colors font-body">Submit an Agent</Link>
+            </div>
           </div>
 
           <div>
-            <h4>gitagent</h4>
-            <ul>
-              <li>
-                <a href="https://gitagent.sh" target="_blank" rel="noopener noreferrer">
-                  gitagent.sh
-                </a>
-              </li>
-              <li>
-                <a href="https://github.com/open-gitagent" target="_blank" rel="noopener noreferrer">
-                  GitHub Org
-                </a>
-              </li>
-            </ul>
+            <span className="text-xs font-heading font-semibold text-foreground mb-3 block">gitagent</span>
+            <div className="space-y-2">
+              <a href="https://gitagent.sh" target="_blank" rel="noopener noreferrer" className="block text-xs text-muted-foreground hover:text-foreground transition-colors font-body">gitagent.sh</a>
+              <a href="https://github.com/open-gitagent" target="_blank" rel="noopener noreferrer" className="block text-xs text-muted-foreground hover:text-foreground transition-colors font-body">GitHub Org</a>
+            </div>
           </div>
 
           <div>
-            <h4>Community</h4>
-            <ul>
-              <li>
-                <a
-                  href="https://github.com/open-gitagent/registry"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  GitHub
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://github.com/open-gitagent/registry/issues"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Issues
-                </a>
-              </li>
-            </ul>
+            <span className="text-xs font-heading font-semibold text-foreground mb-3 block">Community</span>
+            <div className="space-y-2">
+              <a href="https://github.com/open-gitagent/registry" target="_blank" rel="noopener noreferrer" className="block text-xs text-muted-foreground hover:text-foreground transition-colors font-body">GitHub</a>
+              <a href="https://github.com/open-gitagent/registry/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer" className="block text-xs text-muted-foreground hover:text-foreground transition-colors font-body">Contributing</a>
+            </div>
           </div>
         </div>
-        <div className="footer-bottom">
-          open-gitagent &middot; MIT License
-        </div>
+
+        <div className="line-glow w-full mb-6" />
+        <p className="text-xs text-muted-foreground text-center font-body">open-gitagent · MIT License</p>
       </div>
     </footer>
   );

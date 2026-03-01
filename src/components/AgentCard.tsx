@@ -1,71 +1,66 @@
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import type { Agent } from "../lib/api";
 import { CATEGORY_LABELS } from "../lib/api";
 
 function getInitials(name: string) {
-  return name
-    .split("-")
-    .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase())
-    .join("");
+  return name.split("-").slice(0, 2).map((w) => w[0]?.toUpperCase()).join("");
 }
 
-export function AgentCard({ agent }: { agent: Agent }) {
-  const hasBanner = !!agent.banner;
-
+export function AgentCard({ agent, index = 0 }: { agent: Agent; index?: number }) {
   return (
-    <Link
-      to={`/agent/${agent.author}/${agent.name}`}
-      className={`agent-card${hasBanner ? " has-banner" : ""}`}
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.04 }}
     >
-      {hasBanner && (
-        <div className="agent-card-banner">
-          <img src={agent.banner!} alt="" loading="lazy" />
-        </div>
-      )}
-      <div className={hasBanner ? "agent-card-content" : undefined}>
-        <div className="agent-card-header">
-          <div className="agent-card-avatar">
+      <Link
+        to={`/agent/${agent.author}/${agent.name}`}
+        className="block paper-card p-4 hover:border-primary/40 transition-colors"
+      >
+        {agent.banner && (
+          <div className="rounded overflow-hidden mb-3 -mt-1 -mx-1 border border-border">
+            <img src={agent.banner} alt="" className="w-full h-32 object-cover" loading="lazy" />
+          </div>
+        )}
+
+        <div className="flex items-start gap-3 mb-2 relative z-10">
+          <div className="w-9 h-9 rounded-md shrink-0 overflow-hidden">
             {agent.icon ? (
-              <img src={agent.icon} alt={agent.name} loading="lazy" />
+              <img src={agent.icon} alt={agent.name} className="w-full h-full object-cover" loading="lazy" />
             ) : (
-              <div className="agent-card-avatar-initials">
+              <div className="w-full h-full flex items-center justify-center bg-primary/10 text-primary font-heading text-xs font-bold">
                 {getInitials(agent.name)}
               </div>
             )}
           </div>
-          <div className="agent-card-meta">
-            <div className="agent-card-name">{agent.name}</div>
-            <div className="agent-card-author">{agent.author}</div>
+          <div className="min-w-0">
+            <span className="text-sm font-heading font-semibold text-foreground block truncate">{agent.name}</span>
+            <span className="text-[10px] text-muted-foreground font-body">{agent.author}</span>
           </div>
         </div>
 
-        <p className="agent-card-desc">{agent.description}</p>
+        <p className="text-xs text-muted-foreground leading-relaxed font-body line-clamp-2 relative z-10 mb-3">
+          {agent.description}
+        </p>
 
-        <div className="agent-card-footer">
-          <span className="tag">
+        <div className="flex items-center justify-between relative z-10">
+          <span className="text-[10px] sketch-border rounded px-2 py-0.5 text-primary font-body font-medium">
             {CATEGORY_LABELS[agent.category] ?? agent.category}
           </span>
-          <span className="agent-card-version">v{agent.version}</span>
+          <span className="text-[10px] text-muted-foreground font-body">v{agent.version}</span>
         </div>
 
         {agent.tags.length > 0 && (
-          <div className="agent-card-tags">
-            {agent.tags.slice(0, 4).map((tag) => (
-              <span key={tag} className="tag muted">
-                {tag}
-              </span>
+          <div className="flex flex-wrap gap-1 mt-2 relative z-10">
+            {agent.tags.slice(0, 3).map((tag) => (
+              <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded bg-accent/50 text-muted-foreground font-body">{tag}</span>
             ))}
-            {agent.tags.length > 4 && (
-              <span
-                style={{ fontSize: "0.72rem", color: "var(--text-faint)" }}
-              >
-                +{agent.tags.length - 4}
-              </span>
-            )}
+            {agent.tags.length > 3 && <span className="text-[10px] text-muted-foreground/50">+{agent.tags.length - 3}</span>}
           </div>
         )}
-      </div>
-    </Link>
+      </Link>
+    </motion.div>
   );
 }

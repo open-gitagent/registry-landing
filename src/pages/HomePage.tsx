@@ -1,10 +1,28 @@
 import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { ArrowRight, Code, Database, Server, Shield, Lock, FileText, Wrench, Search, Zap, DollarSign, MessageCircle, Palette, GraduationCap, Package } from "lucide-react";
 import { useAgents } from "../hooks/useAgents";
 import { CATEGORY_LABELS } from "../lib/api";
 import { AgentGrid } from "../components/AgentGrid";
 import { SearchBar } from "../components/SearchBar";
-import { ArrowRightIcon, CATEGORY_SVGS } from "../components/Icons";
+
+const CATEGORY_ICONS: Record<string, React.ReactNode> = {
+  "developer-tools": <Code className="w-4 h-4" />,
+  "data-engineering": <Database className="w-4 h-4" />,
+  devops: <Server className="w-4 h-4" />,
+  compliance: <Shield className="w-4 h-4" />,
+  security: <Lock className="w-4 h-4" />,
+  documentation: <FileText className="w-4 h-4" />,
+  testing: <Wrench className="w-4 h-4" />,
+  research: <Search className="w-4 h-4" />,
+  productivity: <Zap className="w-4 h-4" />,
+  finance: <DollarSign className="w-4 h-4" />,
+  "customer-support": <MessageCircle className="w-4 h-4" />,
+  creative: <Palette className="w-4 h-4" />,
+  education: <GraduationCap className="w-4 h-4" />,
+  other: <Package className="w-4 h-4" />,
+};
 
 export default function HomePage() {
   const { agents, total, loading } = useAgents();
@@ -16,148 +34,88 @@ export default function HomePage() {
     return Array.from(cats).sort();
   }, [agents]);
 
-  const contributors = useMemo(
-    () => new Set(agents.map((a) => a.author)).size,
-    [agents]
-  );
+  const contributors = useMemo(() => new Set(agents.map((a) => a.author)).size, [agents]);
 
   const handleSearch = (value: string) => {
     setQuery(value);
-    if (value.trim()) {
-      navigate(`/browse?q=${encodeURIComponent(value)}`);
-    }
+    if (value.trim()) navigate(`/browse?q=${encodeURIComponent(value)}`);
   };
 
-  const featured = agents.slice(0, 6);
-
   return (
-    <>
+    <div className="min-h-screen">
       {/* Hero */}
-      <section className="hero hero-centered">
-        <div className="container">
-          <div className="hero-text">
-            <div className="hero-badge">
-              <span className="dot"></span> open-gitagent/registry
+      <section className="pt-28 pb-20 px-6">
+        <div className="mx-auto max-w-6xl text-center">
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            <div className="inline-flex items-center gap-2 sketch-border rounded-full px-3 py-1 text-xs text-muted-foreground mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              <span className="text-primary font-medium">open-gitagent/registry</span>
             </div>
-            <h1>
-              The Agent <span className="accent">Registry</span>
+
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold leading-tight tracking-tight text-foreground mb-4">
+              The Agent <span className="text-primary">Registry</span>
             </h1>
-            <p className="subtitle">
-              Discover, share, and install git-native AI agents built with the
-              gitagent standard.
+
+            <p className="text-sm text-muted-foreground max-w-md mx-auto mb-8 font-body leading-relaxed">
+              Discover, share, and install git-native AI agents built with the gitagent standard.
             </p>
 
-            <SearchBar
-              value={query}
-              onChange={handleSearch}
-              placeholder="Search agents by name, tag, or category..."
-            />
+            <SearchBar value={query} onChange={handleSearch} placeholder="Search agents by name, tag, or category..." />
 
             {/* Stats */}
-            <div className="stats-bar" style={{ marginTop: 40 }}>
+            <div className="flex items-center justify-center gap-6 mt-8 font-body text-xs">
               <div>
-                <span className="stat-value">
-                  {loading ? "-" : total}
-                </span>
-                <span className="stat-label">agents</span>
+                <span className="font-heading font-bold text-base text-foreground">{loading ? "–" : total}</span>
+                <span className="text-muted-foreground ml-1.5">agents</span>
               </div>
-              <div className="stat-divider" />
+              <span className="w-px h-4 bg-border" />
               <div>
-                <span className="stat-value">
-                  {loading ? "-" : activeCategories.length}
-                </span>
-                <span className="stat-label">categories</span>
+                <span className="font-heading font-bold text-base text-foreground">{loading ? "–" : activeCategories.length}</span>
+                <span className="text-muted-foreground ml-1.5">categories</span>
               </div>
-              <div className="stat-divider" />
+              <span className="w-px h-4 bg-border" />
               <div>
-                <span className="stat-value">
-                  {loading ? "-" : contributors}
-                </span>
-                <span className="stat-label">contributors</span>
+                <span className="font-heading font-bold text-base text-foreground">{loading ? "–" : contributors}</span>
+                <span className="text-muted-foreground ml-1.5">contributors</span>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
-
-      <hr className="section-divider" />
 
       {/* Featured */}
-      <section>
-        <div className="container">
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 40,
-            }}
-          >
-            <h2>Featured Agents</h2>
-            <Link
-              to="/browse"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                fontSize: "0.875rem",
-                color: "var(--text-muted)",
-              }}
-            >
-              View all{" "}
-              <span
-                style={{ display: "inline-flex" }}
-              >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <ArrowRightIcon />
-                </svg>
-              </span>
+      <section className="py-16 px-6 border-t border-border">
+        <div className="mx-auto max-w-6xl">
+          <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="flex items-center justify-between mb-8">
+            <h2 className="text-xl font-bold text-foreground">Featured Agents</h2>
+            <Link to="/browse" className="text-xs text-muted-foreground hover:text-foreground transition-colors font-body flex items-center gap-1">
+              View all <ArrowRight className="w-3 h-3" />
             </Link>
-          </div>
-          <AgentGrid agents={featured} loading={loading} />
+          </motion.div>
+          <AgentGrid agents={agents.slice(0, 6)} loading={loading} />
         </div>
       </section>
-
-      <hr className="section-divider" />
 
       {/* Categories */}
       {activeCategories.length > 0 && (
-        <section>
-          <div className="container">
-            <div className="section-header">
-              <h2>Browse by Category</h2>
-            </div>
-            <div className="category-grid">
-              {activeCategories.map((cat) => {
+        <section className="py-16 px-6 border-t border-border">
+          <div className="mx-auto max-w-6xl">
+            <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-8">
+              <h2 className="text-xl font-bold text-foreground">Browse by Category</h2>
+            </motion.div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {activeCategories.map((cat, i) => {
                 const count = agents.filter((a) => a.category === cat).length;
-                const IconComp = CATEGORY_SVGS[cat] ?? CATEGORY_SVGS["other"];
                 return (
-                  <Link
-                    key={cat}
-                    to={`/browse?category=${cat}`}
-                    className="category-card"
-                  >
-                    <span className="category-card-icon">
-                      <IconComp />
-                    </span>
-                    <div>
-                      <div className="category-card-label">
-                        {CATEGORY_LABELS[cat] ?? cat}
+                  <motion.div key={cat} initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.04 }}>
+                    <Link to={`/browse?category=${cat}`} className="flex items-center gap-3 paper-card p-3 hover:border-primary/40 transition-colors">
+                      <span className="text-primary relative z-10">{CATEGORY_ICONS[cat] ?? <Package className="w-4 h-4" />}</span>
+                      <div className="relative z-10">
+                        <span className="text-xs font-heading font-semibold text-foreground block">{CATEGORY_LABELS[cat] ?? cat}</span>
+                        <span className="text-[10px] text-muted-foreground font-body">{count} {count === 1 ? "agent" : "agents"}</span>
                       </div>
-                      <div className="category-card-count">
-                        {count} {count === 1 ? "agent" : "agents"}
-                      </div>
-                    </div>
-                  </Link>
+                    </Link>
+                  </motion.div>
                 );
               })}
             </div>
@@ -165,29 +123,20 @@ export default function HomePage() {
         </section>
       )}
 
-      <hr className="section-divider" />
-
       {/* Submit CTA */}
-      <section>
-        <div className="container" style={{ textAlign: "center" }}>
-          <h2>
-            Share Your <span className="glow-green">Agent</span>
-          </h2>
-          <p
-            style={{
-              margin: "16px auto 32px",
-              color: "var(--text-muted)",
-              fontSize: "1.1rem",
-            }}
-          >
-            Built an agent with gitagent? Submit it to the registry and share it
-            with the community.
-          </p>
-          <Link to="/submit" className="btn btn-primary">
-            Submit Your Agent
-          </Link>
+      <section className="py-20 px-6 border-t border-border">
+        <div className="mx-auto max-w-6xl text-center">
+          <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <h2 className="text-xl font-bold text-foreground mb-2">Share Your Agent</h2>
+            <p className="text-sm text-muted-foreground font-body mb-6 max-w-md mx-auto">
+              Built an agent with gitagent? Submit it to the registry and share it with the community.
+            </p>
+            <Link to="/submit" className="inline-flex items-center gap-2 bg-primary text-primary-foreground text-xs font-medium px-4 py-2 rounded-md transition-opacity hover:opacity-90 font-body sketch-border border-primary">
+              Submit Your Agent <ArrowRight className="w-3 h-3" />
+            </Link>
+          </motion.div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

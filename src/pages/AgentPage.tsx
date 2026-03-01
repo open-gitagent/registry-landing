@@ -1,25 +1,15 @@
 import { useState, useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { ArrowLeft, ExternalLink, GitBranch, Shield } from "lucide-react";
 import { useAgents } from "../hooks/useAgents";
 import { fetchReadme, CATEGORY_LABELS } from "../lib/api";
 import { InstallCommand } from "../components/InstallCommand";
-import {
-  ArrowLeftIcon,
-  ExternalLinkIcon,
-  TagIcon,
-  GitBranchIcon,
-  ShieldIcon,
-  CpuIcon,
-} from "../components/Icons";
 
 function getInitials(name: string) {
-  return name
-    .split("-")
-    .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase())
-    .join("");
+  return name.split("-").slice(0, 2).map((w) => w[0]?.toUpperCase()).join("");
 }
 
 export default function AgentPage() {
@@ -36,25 +26,14 @@ export default function AgentPage() {
   useEffect(() => {
     if (!agent) return;
     setReadmeLoading(true);
-    fetchReadme(agent.readme)
-      .then(setReadme)
-      .catch(() => setReadme(null))
-      .finally(() => setReadmeLoading(false));
+    fetchReadme(agent.readme).then(setReadme).catch(() => setReadme(null)).finally(() => setReadmeLoading(false));
   }, [agent]);
 
-  // Set OG meta for agent with banner
   useEffect(() => {
     if (!agent) return;
     document.title = `${agent.name} by ${agent.author} — gitagent registry`;
-
-    // Update OG image to agent banner if available
-    let ogMeta = document.querySelector(
-      'meta[property="og:image"]'
-    ) as HTMLMetaElement | null;
-    if (agent.banner && ogMeta) {
-      ogMeta.content = agent.banner;
-    }
-
+    const ogMeta = document.querySelector('meta[property="og:image"]') as HTMLMetaElement | null;
+    if (agent.banner && ogMeta) ogMeta.content = agent.banner;
     return () => {
       document.title = "gitagent registry — discover and share AI agents";
       if (ogMeta) ogMeta.content = "/og-image.png";
@@ -63,11 +42,11 @@ export default function AgentPage() {
 
   if (agentsLoading) {
     return (
-      <section style={{ paddingTop: 100 }}>
-        <div className="container">
-          <div className="skeleton-line w-40" />
-          <div className="skeleton-line w-60" style={{ marginTop: 32 }} />
-          <div className="skeleton-line w-full" style={{ marginTop: 16 }} />
+      <section className="pt-24 pb-20 px-6">
+        <div className="mx-auto max-w-6xl animate-pulse">
+          <div className="h-3 w-24 bg-accent/50 rounded mb-8" />
+          <div className="h-6 w-48 bg-accent/50 rounded mb-3" />
+          <div className="h-3 w-96 bg-accent/30 rounded" />
         </div>
       </section>
     );
@@ -75,162 +54,155 @@ export default function AgentPage() {
 
   if (!agent) {
     return (
-      <section style={{ paddingTop: 100 }}>
-        <div className="container" style={{ textAlign: "center", padding: "80px 0" }}>
-          <h1>Agent not found</h1>
-          <p className="text-muted" style={{ margin: "8px auto" }}>
-            No agent found for {author}/{name}
-          </p>
-          <Link to="/browse" className="back-link" style={{ marginTop: 24, justifyContent: "center" }}>
-            <ArrowLeftIcon /> Back to browse
+      <section className="pt-24 pb-20 px-6">
+        <div className="mx-auto max-w-6xl text-center py-20">
+          <h1 className="text-2xl font-bold text-foreground">Agent not found</h1>
+          <p className="text-sm text-muted-foreground mt-2 font-body">No agent found for {author}/{name}</p>
+          <Link to="/browse" className="inline-flex items-center gap-1.5 text-xs text-primary mt-4 font-body hover:underline">
+            <ArrowLeft className="w-3 h-3" /> Back to browse
           </Link>
         </div>
       </section>
     );
   }
 
-  const repoPath = agent.path
-    ? `${agent.repository}/tree/main/${agent.path}`
-    : agent.repository;
+  const repoPath = agent.path ? `${agent.repository}/tree/main/${agent.path}` : agent.repository;
 
   return (
-    <section style={{ paddingTop: 100 }}>
-      <div className="container">
-        <Link to="/browse" className="back-link">
-          <ArrowLeftIcon /> Back to browse
+    <section className="pt-24 pb-20 px-6">
+      <div className="mx-auto max-w-6xl">
+        <Link to="/browse" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors font-body mb-6">
+          <ArrowLeft className="w-3 h-3" /> Back to browse
         </Link>
 
         {/* Banner */}
         {agent.banner && (
-          <div className="agent-detail-banner">
-            <img src={agent.banner} alt={`${agent.name} banner`} />
-          </div>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="rounded-lg overflow-hidden border border-border mb-6" style={{ boxShadow: "2px 3px 0px hsl(var(--border))" }}>
+            <img src={agent.banner} alt={`${agent.name} banner`} className="w-full" />
+          </motion.div>
         )}
 
-        <div className="agent-detail">
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-8 items-start">
           {/* Main */}
-          <div className="agent-detail-main">
-            <div className="agent-detail-header">
-              <div className="agent-detail-icon">
+          <div className="min-w-0">
+            <div className="flex items-start gap-4 mb-4">
+              <div className="w-14 h-14 rounded-lg shrink-0 overflow-hidden">
                 {agent.icon ? (
-                  <img src={agent.icon} alt={agent.name} />
+                  <img src={agent.icon} alt={agent.name} className="w-full h-full object-cover" />
                 ) : (
-                  <div className="agent-detail-icon-initials">
+                  <div className="w-full h-full flex items-center justify-center bg-primary/10 text-primary font-heading text-lg font-bold">
                     {getInitials(agent.name)}
                   </div>
                 )}
               </div>
-              <div className="agent-detail-title">
-                <h1>{agent.name}</h1>
-                <div className="agent-detail-author">by {agent.author}</div>
+              <div>
+                <h1 className="text-2xl font-heading font-bold text-foreground">{agent.name}</h1>
+                <p className="text-xs text-muted-foreground font-body mt-0.5">by {agent.author}</p>
               </div>
             </div>
 
-            <p style={{ marginBottom: 16, lineHeight: 1.7, maxWidth: "none" }}>
-              {agent.description}
-            </p>
+            <p className="text-sm text-muted-foreground font-body leading-relaxed mb-4">{agent.description}</p>
 
             {/* Badges */}
-            <div className="agent-detail-badges">
-              <span className="tag">
-                <span style={{ display: "inline-flex", verticalAlign: "middle", marginRight: 4 }}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><TagIcon /></svg>
-                </span>
+            <div className="flex flex-wrap gap-2 mb-8">
+              <span className="inline-flex items-center gap-1.5 text-[10px] sketch-border rounded px-2 py-1 text-primary font-body font-medium">
                 {CATEGORY_LABELS[agent.category] ?? agent.category}
               </span>
-              <span className="tag muted">
-                <span style={{ display: "inline-flex", verticalAlign: "middle", marginRight: 4 }}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><GitBranchIcon /></svg>
-                </span>
-                v{agent.version}
+              <span className="inline-flex items-center gap-1.5 text-[10px] sketch-border rounded px-2 py-1 text-muted-foreground font-body">
+                <GitBranch className="w-2.5 h-2.5" /> v{agent.version}
               </span>
-              <span className="tag muted">
-                <span style={{ display: "inline-flex", verticalAlign: "middle", marginRight: 4 }}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><ShieldIcon /></svg>
-                </span>
-                {agent.license}
+              <span className="inline-flex items-center gap-1.5 text-[10px] sketch-border rounded px-2 py-1 text-muted-foreground font-body">
+                <Shield className="w-2.5 h-2.5" /> {agent.license}
               </span>
             </div>
 
-            {/* Install & Export */}
-            <h2 style={{ fontSize: "1.2rem", marginBottom: 16 }}>Quick Start</h2>
-            <InstallCommand
-              repoUrl={agent.repository}
-              path={agent.path}
-              adapters={agent.adapters}
-            />
+            {/* Install command */}
+            <h2 className="text-base font-heading font-semibold text-foreground mb-3">Run this Agent</h2>
+            <InstallCommand repoUrl={agent.repository} />
+
+            {/* Export */}
+            <div className="mt-8">
+              <h2 className="text-base font-heading font-semibold text-foreground mb-3">Export Anywhere</h2>
+              <div className="space-y-2">
+                {agent.adapters.map((adapter, i) => (
+                  <motion.div
+                    key={adapter}
+                    initial={{ opacity: 0, y: 8 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.04 }}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 paper-card p-3"
+                  >
+                    <span className="text-xs font-heading font-semibold text-foreground relative z-10">{adapter}</span>
+                    <code className="text-[10px] sm:text-xs text-primary shrink-0 font-body relative z-10">$ gitagent export -f {adapter}</code>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
 
             {/* README */}
-            <div className="readme-content">
-              <h2 style={{ fontSize: "1.2rem", marginBottom: 16, borderBottom: "none", paddingBottom: 0 }}>
-                Documentation
-              </h2>
+            <div className="mt-10">
+              <h2 className="text-base font-heading font-semibold text-foreground mb-4">Documentation</h2>
               {readmeLoading ? (
-                <div>
-                  <div className="skeleton-line w-80" />
-                  <div className="skeleton-line w-full" />
-                  <div className="skeleton-line w-60" />
+                <div className="animate-pulse space-y-2">
+                  <div className="h-3 w-3/4 bg-accent/30 rounded" />
+                  <div className="h-3 w-full bg-accent/30 rounded" />
+                  <div className="h-3 w-2/3 bg-accent/30 rounded" />
                 </div>
               ) : readme ? (
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {readme}
-                </ReactMarkdown>
+                <div className="readme-content">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{readme}</ReactMarkdown>
+                </div>
               ) : (
-                <p className="text-muted" style={{ fontSize: "0.9rem" }}>
-                  No documentation available.
-                </p>
+                <p className="text-xs text-muted-foreground font-body">No documentation available.</p>
               )}
             </div>
           </div>
 
           {/* Sidebar */}
-          <aside className="agent-sidebar">
-            <div className="agent-sidebar-card">
-              <div className="sidebar-section">
-                <div className="sidebar-label">Model</div>
-                <div className="sidebar-value" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><CpuIcon /></svg>
-                  {agent.model}
-                </div>
+          <aside className="lg:sticky lg:top-20">
+            <div className="paper-card p-4 space-y-5">
+              <div className="relative z-10">
+                <span className="text-[10px] uppercase tracking-widest text-muted-foreground/60 font-body block mb-2">Model</span>
+                <span className="text-xs text-foreground font-body">{agent.model}</span>
               </div>
 
-              <div className="sidebar-section">
-                <div className="sidebar-label">Adapters</div>
-                <div className="sidebar-tags">
+              <div className="relative z-10">
+                <span className="text-[10px] uppercase tracking-widest text-muted-foreground/60 font-body block mb-2">Adapters</span>
+                <div className="flex flex-wrap gap-1">
                   {agent.adapters.map((a) => (
-                    <span key={a} className="tag muted">{a}</span>
+                    <span key={a} className="text-[10px] px-1.5 py-0.5 rounded bg-accent/50 text-muted-foreground font-body">{a}</span>
                   ))}
                 </div>
               </div>
 
-              <div className="sidebar-section">
-                <div className="sidebar-label">Tags</div>
-                <div className="sidebar-tags">
+              <div className="relative z-10">
+                <span className="text-[10px] uppercase tracking-widest text-muted-foreground/60 font-body block mb-2">Tags</span>
+                <div className="flex flex-wrap gap-1">
                   {agent.tags.map((tag) => (
-                    <Link key={tag} to={`/browse?q=${encodeURIComponent(tag)}`} className="tag muted">
+                    <Link key={tag} to={`/browse?q=${encodeURIComponent(tag)}`} className="text-[10px] px-1.5 py-0.5 rounded bg-accent/50 text-muted-foreground hover:text-primary font-body transition-colors">
                       {tag}
                     </Link>
                   ))}
                 </div>
               </div>
 
-              <div className="sidebar-section">
-                <div className="sidebar-label">Added</div>
-                <div className="sidebar-value">{agent.added_at}</div>
+              <div className="relative z-10">
+                <span className="text-[10px] uppercase tracking-widest text-muted-foreground/60 font-body block mb-2">Added</span>
+                <span className="text-xs text-muted-foreground font-body">{agent.added_at}</span>
               </div>
 
               <a
                 href={repoPath}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="sidebar-btn"
+                className="flex items-center justify-center gap-2 w-full sketch-border rounded-md px-3 py-2 text-xs font-body text-foreground hover:bg-accent transition-colors relative z-10"
               >
-                <ExternalLinkIcon />
-                View on GitHub
+                <ExternalLink className="w-3 h-3" /> View on GitHub
               </a>
             </div>
           </aside>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
