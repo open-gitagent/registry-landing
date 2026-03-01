@@ -88,6 +88,7 @@ export default function AgentPage() {
 
   const repoPath = agent.path ? `${agent.repository}/tree/main/${agent.path}` : agent.repository;
   const repoShort = agent.repository.replace("https://github.com/", "");
+  const githubOgImage = `https://opengraph.githubassets.com/1/${repoShort}`;
 
   return (
     <section className="pt-24 pb-20 px-6">
@@ -97,7 +98,12 @@ export default function AgentPage() {
         </Link>
 
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
-          {/* ===== GitHub-style repo header ===== */}
+          {/* ===== GitHub repo preview image ===== */}
+          <a href={repoPath} target="_blank" rel="noopener noreferrer" className="block rounded-lg overflow-hidden border border-border mb-6 hover:border-primary/30 transition-colors" style={{ boxShadow: "2px 3px 0px hsl(var(--border))" }}>
+            <img src={agent.banner ?? githubOgImage} alt={`${agent.name} repository`} className="w-full" loading="lazy" />
+          </a>
+
+          {/* ===== Repo header ===== */}
           <div className="paper-card p-6 mb-6">
             {/* Row 1: icon + name + badges */}
             <div className="flex items-center gap-4 mb-3 relative z-10">
