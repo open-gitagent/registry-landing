@@ -18,6 +18,7 @@ export interface Agent {
     issues: number;
     language: string | null;
     avatar: string;
+    social_preview: string | null;
     description: string | null;
   } | null;
   readme: string;

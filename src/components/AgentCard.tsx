@@ -4,6 +4,17 @@ import { Star, GitFork, ExternalLink, CircleDot } from "lucide-react";
 import type { Agent } from "../lib/api";
 import { CATEGORY_LABELS } from "../lib/api";
 
+// Priority: banner (icon) > custom social preview > GitHub avatar
+function getProfileImage(agent: Agent, gh: Agent["github"]): string {
+  // 1. Agent's custom icon
+  if (agent.icon) return agent.icon;
+  // 2. Custom social preview (repository-images, not auto-generated opengraph)
+  const sp = gh?.social_preview;
+  if (sp && sp.includes("repository-images.githubusercontent.com")) return sp;
+  // 3. GitHub avatar
+  return gh?.avatar ?? `https://github.com/${agent.author}.png?size=40`;
+}
+
 export function AgentCard({ agent, index = 0 }: { agent: Agent; index?: number }) {
   const gh = agent.github;
 
@@ -21,12 +32,12 @@ export function AgentCard({ agent, index = 0 }: { agent: Agent; index?: number }
       >
         {/* Top section: GitHub-style repo preview */}
         <div className="p-4 pb-3 border-b border-border/50 relative z-10">
-          {/* Avatar + repo name */}
+          {/* Profile image + repo name */}
           <div className="flex items-center gap-3 mb-2">
             <img
-              src={gh?.avatar ?? `https://github.com/${agent.author}.png?size=40`}
+              src={getProfileImage(agent, gh)}
               alt={agent.author}
-              className="w-8 h-8 rounded-full shrink-0"
+              className="w-8 h-8 rounded-full shrink-0 object-cover"
               loading="lazy"
             />
             <div className="min-w-0">
