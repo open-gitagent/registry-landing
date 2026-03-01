@@ -18,7 +18,7 @@ export function InstallCommand({ repoUrl }: Props) {
   const [selectedAdapter, setSelectedAdapter] = useState(ADAPTERS[0]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const cmd = `npx @open-gitagent/gitagent@0.1.7 run -r ${repoUrl} -a ${selectedAdapter.flag}`;
+  const cmd = `npx @open-gitagent/gitagent@latest run -r ${repoUrl} -a ${selectedAdapter.flag}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(cmd);
@@ -46,7 +46,7 @@ export function InstallCommand({ repoUrl }: Props) {
       <div className="flex items-center gap-2 text-xs sm:text-sm leading-6 sm:leading-7 font-body break-all sm:break-normal">
         <span className="flex-1 cursor-pointer" onClick={handleCopy}>
           <span className="text-primary">$ </span>
-          <span className="text-foreground font-medium">npx @open-gitagent/gitagent@0.1.7 run</span>
+          <span className="text-foreground font-medium">npx @open-gitagent/gitagent@latest run</span>
           <span className="text-muted-foreground"> -r </span>
           <span className="text-primary/70">{repoUrl}</span>
           <span className="text-muted-foreground"> -a </span>
