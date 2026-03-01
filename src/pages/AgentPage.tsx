@@ -7,6 +7,7 @@ import { ArrowLeft, ExternalLink, GitBranch, Shield, BookOpen, Star, GitFork, Ci
 import { useAgents } from "../hooks/useAgents";
 import { fetchReadme, CATEGORY_LABELS } from "../lib/api";
 import { InstallCommand } from "../components/InstallCommand";
+import { track } from "../lib/analytics";
 
 function ShareButton({ url }: { url: string }) {
   const [copied, setCopied] = useState(false);
@@ -15,6 +16,7 @@ function ShareButton({ url }: { url: string }) {
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+    track('agent_shared', { url });
   };
 
   return (

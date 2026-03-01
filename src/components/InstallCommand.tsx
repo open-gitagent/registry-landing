@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Copy, Check } from "lucide-react";
+import { track } from "../lib/analytics";
 
 const ADAPTERS = [
   { label: "Claude Code", flag: "claude" },
@@ -23,6 +24,7 @@ export function InstallCommand({ repoUrl }: Props) {
     navigator.clipboard.writeText(cmd);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+    track('install_command_copied', { adapter: selectedAdapter.flag, repo: repoUrl });
   };
 
   return (
@@ -67,7 +69,7 @@ export function InstallCommand({ repoUrl }: Props) {
               {ADAPTERS.map((a) => (
                 <button
                   key={a.flag}
-                  onClick={() => { setSelectedAdapter(a); setDropdownOpen(false); }}
+                  onClick={() => { setSelectedAdapter(a); setDropdownOpen(false); track('adapter_selected', { adapter: a.flag, label: a.label, repo: repoUrl }); }}
                   className={`block w-full text-left px-3 py-1.5 text-xs font-body hover:bg-accent transition-colors ${
                     a.flag === selectedAdapter.flag ? "text-primary font-medium" : "text-foreground"
                   }`}

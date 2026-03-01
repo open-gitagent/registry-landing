@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Star, GitFork, ExternalLink, CircleDot } from "lucide-react";
 import type { Agent } from "../lib/api";
 import { CATEGORY_LABELS } from "../lib/api";
+import { track } from "../lib/analytics";
 
 // Priority: banner (icon) > custom social preview > GitHub avatar
 function getProfileImage(agent: Agent, gh: Agent["github"]): string {
@@ -28,6 +29,7 @@ export function AgentCard({ agent, index = 0 }: { agent: Agent; index?: number }
     >
       <Link
         to={`/agent/${agent.author}/${agent.name}`}
+        onClick={() => track('agent_card_clicked', { name: agent.name, author: agent.author, category: agent.category })}
         className="flex flex-col paper-card overflow-hidden hover:border-primary/40 transition-colors h-full"
       >
         {/* Top section: GitHub-style repo preview */}
