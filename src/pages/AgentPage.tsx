@@ -37,7 +37,7 @@ export default function AgentPage() {
     if (agent.banner && ogMeta) ogMeta.content = agent.banner;
     return () => {
       document.title = "gitagent registry — discover and share AI agents";
-      if (ogMeta) ogMeta.content = "/og-image.png";
+      if (ogMeta) ogMeta.content = "/api/og-home";
     };
   }, [agent]);
 
