@@ -34,6 +34,7 @@ export function Footer() {
             <span className="text-xs font-heading font-semibold text-foreground mb-3 block">Community</span>
             <div className="space-y-2">
               <a href="https://github.com/open-gitagent/registry" target="_blank" rel="noopener noreferrer" className="block text-xs text-muted-foreground hover:text-foreground transition-colors font-body">GitHub</a>
+              <a href="https://discord.gg/hVZV8Xyjdc" target="_blank" rel="noopener noreferrer" className="block text-xs text-muted-foreground hover:text-foreground transition-colors font-body">Discord</a>
               <a href="https://github.com/open-gitagent/registry/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer" className="block text-xs text-muted-foreground hover:text-foreground transition-colors font-body">Contributing</a>
             </div>
           </div>

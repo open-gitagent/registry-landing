@@ -33,6 +33,9 @@ export function Nav() {
           <a href="https://gitagent.sh" className="text-xs text-primary font-medium font-body">
             gitagent.sh
           </a>
+          <a href="https://discord.gg/hVZV8Xyjdc" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground transition-colors font-body">
+            Discord
+          </a>
           <a
             href="https://github.com/open-gitagent/registry"
             target="_blank"
@@ -59,6 +62,7 @@ export function Nav() {
             </Link>
           ))}
           <a href="https://gitagent.sh" className="block text-xs text-primary font-body">gitagent.sh</a>
+          <a href="https://discord.gg/hVZV8Xyjdc" target="_blank" rel="noopener noreferrer" className="block text-xs text-muted-foreground hover:text-foreground font-body">Discord</a>
         </div>
       )}
     </nav>
