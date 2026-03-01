@@ -34,7 +34,7 @@ export default function handler(req: Request) {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          padding: '60px 90px',
+          padding: '60px 70px',
           fontFamily: 'monospace',
           position: 'relative',
         }}
@@ -55,20 +55,20 @@ export default function handler(req: Request) {
         <div
           style={{
             position: 'absolute',
-            top: 44,
-            left: 90,
+            top: 40,
+            left: 70,
             display: 'flex',
             alignItems: 'center',
             gap: 12,
-            fontSize: 26,
+            fontSize: 32,
             color: accent,
             opacity: 0.5,
           }}
         >
           <div
             style={{
-              width: 10,
-              height: 10,
+              width: 12,
+              height: 12,
               borderRadius: '50%',
               background: accent,
             }}
@@ -79,40 +79,26 @@ export default function handler(req: Request) {
         {/* Agent name */}
         <div
           style={{
-            fontSize: 110,
+            fontSize: 130,
             fontWeight: 700,
             color: '#3D2B1F',
             lineHeight: 1,
             letterSpacing: '-0.04em',
-            marginBottom: 24,
+            marginBottom: 28,
           }}
         >
           {name}
         </div>
-
-        {/* Description */}
-        {description && (
-          <div
-            style={{
-              fontSize: 36,
-              color: '#6B5B4E',
-              lineHeight: 1.4,
-              maxWidth: 1000,
-              marginBottom: 32,
-            }}
-          >
-            {description.length > 80 ? description.slice(0, 80) + '...' : description}
-          </div>
-        )}
 
         {/* Author + repo + category row */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 28,
-            fontSize: 28,
+            gap: 24,
+            fontSize: 38,
             color: '#8B7B6E',
+            marginBottom: 28,
           }}
         >
           <span style={{ fontWeight: 600 }}>{author}</span>
@@ -127,11 +113,11 @@ export default function handler(req: Request) {
               <span style={{ opacity: 0.3 }}>·</span>
               <span
                 style={{
-                  fontSize: 24,
+                  fontSize: 32,
                   color: accent,
                   border: `2px solid ${accent}50`,
                   borderRadius: 8,
-                  padding: '4px 16px',
+                  padding: '4px 18px',
                 }}
               >
                 {category}
@@ -140,13 +126,27 @@ export default function handler(req: Request) {
           )}
         </div>
 
+        {/* Description */}
+        {description && (
+          <div
+            style={{
+              fontSize: 38,
+              color: '#6B5B4E',
+              lineHeight: 1.4,
+              maxWidth: 1050,
+            }}
+          >
+            {description.length > 70 ? description.slice(0, 70) + '...' : description}
+          </div>
+        )}
+
         {/* Bottom-right watermark */}
         <div
           style={{
             position: 'absolute',
-            bottom: 36,
-            right: 90,
-            fontSize: 22,
+            bottom: 32,
+            right: 70,
+            fontSize: 28,
             color: accent,
             opacity: 0.3,
           }}
