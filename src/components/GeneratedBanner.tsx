@@ -7,6 +7,7 @@
 interface Props {
   name: string;
   author: string;
+  repo?: string;
   className?: string;
   width?: number;
   height?: number;
@@ -41,7 +42,7 @@ const PALETTES = [
   ["#6E5A50", "#917A6C", "#B09A88", "#CCB8A4", "#E2D6C8"],  // dusty rose
 ];
 
-export function GeneratedBanner({ name, author, className = "", width = 1200, height = 630 }: Props) {
+export function GeneratedBanner({ name, author, repo, className = "", width = 1200, height = 630 }: Props) {
   const seed = hash(`${author}/${name}`);
   const rand = seededRandom(seed);
 
@@ -130,6 +131,7 @@ export function GeneratedBanner({ name, author, className = "", width = 1200, he
 
   // Agent name text overlay (bottom-left)
   const initials = name.split("-").slice(0, 2).map((w) => w[0]?.toUpperCase()).join("");
+  const repoShort = repo?.replace("https://github.com/", "") ?? "";
 
   return (
     <svg
@@ -171,7 +173,7 @@ export function GeneratedBanner({ name, author, className = "", width = 1200, he
       {/* Agent name — bottom left */}
       <text
         x={40}
-        y={height - 48}
+        y={height - 68}
         fontFamily="'IBM Plex Mono', monospace"
         fontSize={22}
         fontWeight={600}
@@ -182,7 +184,7 @@ export function GeneratedBanner({ name, author, className = "", width = 1200, he
       </text>
       <text
         x={40}
-        y={height - 24}
+        y={height - 44}
         fontFamily="'IBM Plex Mono', monospace"
         fontSize={13}
         fill={colors[1]}
@@ -190,6 +192,20 @@ export function GeneratedBanner({ name, author, className = "", width = 1200, he
       >
         {author}
       </text>
+
+      {/* Repo URL — bottom left, below author */}
+      {repoShort && (
+        <text
+          x={40}
+          y={height - 22}
+          fontFamily="'IBM Plex Mono', monospace"
+          fontSize={11}
+          fill={colors[2]}
+          opacity={0.3}
+        >
+          github.com/{repoShort}
+        </text>
+      )}
     </svg>
   );
 }

@@ -81,7 +81,7 @@ export default function AgentPage() {
           {agent.banner ? (
             <img src={agent.banner} alt={`${agent.name} banner`} className="w-full" />
           ) : (
-            <GeneratedBanner name={agent.name} author={agent.author} />
+            <GeneratedBanner name={agent.name} author={agent.author} repo={agent.repository} />
           )}
         </motion.div>
 
