@@ -84,6 +84,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      <DiscordBanner />
+
       {/* Featured */}
       <section className="py-16 px-6 border-t border-border">
         <div className="mx-auto max-w-6xl">
@@ -138,8 +140,6 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
-
-      <DiscordBanner />
     </div>
   );
 }
