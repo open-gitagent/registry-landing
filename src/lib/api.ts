@@ -33,9 +33,11 @@ export interface AgentIndex {
 
 let cached: AgentIndex | null = null;
 
+const INDEX_URL = "https://raw.githubusercontent.com/open-gitagent/registry/main/index.json";
+
 export async function fetchAgents(): Promise<AgentIndex> {
   if (cached) return cached;
-  const res = await fetch("/index.json");
+  const res = await fetch(INDEX_URL);
   if (!res.ok) throw new Error(`Failed to fetch agents: ${res.status}`);
   cached = await res.json();
   return cached!;
